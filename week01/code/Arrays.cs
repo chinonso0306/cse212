@@ -1,16 +1,31 @@
-public static double[] MultiplesOf(double startingNumber, int numberOfMultiples)
+public static void RotateListRight(List<int> data, int amount)
 {
-    // Step 1: Create an array with the required size
-    double[] multiples = new double[numberOfMultiples];
+    // PLAN:
+    // 1. If amount equals list size, list stays the same
+    // 2. Split list into two parts:
+    //      - last 'amount' elements
+    //      - first part before them
+    // 3. Clear original list
+    // 4. Rebuild list in rotated order
 
-    // Step 2: Loop through the array positions
-    for (int i = 0; i < numberOfMultiples; i++)
+    int n = data.Count;
+
+    // Edge case: no rotation needed
+    if (amount == 0 || amount == n)
     {
-        // Step 3: Calculate the multiple
-        // i + 1 is used because multiples start at 1, not 0
-        multiples[i] = startingNumber * (i + 1);
+        return;
     }
 
-    // Step 4: Return the completed array
-    return multiples;
+    // Step 1: get last part
+    List<int> endPart = data.GetRange(n - amount, amount);
+
+    // Step 2: get beginning part
+    List<int> beginningPart = data.GetRange(0, n - amount);
+
+    // Step 3: reset list
+    data.Clear();
+
+    // Step 4: rebuild in rotated order
+    data.AddRange(endPart);
+    data.AddRange(beginningPart);
 }
