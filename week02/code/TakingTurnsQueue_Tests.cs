@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 // TODO Problem 1 - Run test cases and record any defects the test code finds in the comment above the test method.
 // DO NOT MODIFY THE CODE IN THE TESTS in this file, just the comments above the tests. 
@@ -11,7 +12,9 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Bob (2), Tim (5), Sue (3) and
     // run until the queue is empty
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
-    // Defect(s) Found: 
+    // Defect(s) Found: The queue implementation does not re-add people back to the queue after 
+    // pulling them out. It treats the collection as a standard queue rather than a circular taking-turns 
+    // queue, causing the queue to empty prematurely after only 3 iterations (Bob, Tim, Sue).
     public void TestTakingTurnsQueue_FiniteRepetition()
     {
         var bob = new Person("Bob", 2);
@@ -43,7 +46,9 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Bob (2), Tim (5), Sue (3)
     // After running 5 times, add George with 3 turns.  Run until the queue is empty.
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, George, Sue, Tim, George, Tim, George
-    // Defect(s) Found: 
+    // Defect(s) Found: Because items are not re-enqueued after their turn, the queue empties completely 
+    // after 3 steps. The loop fails at index i=3 when attempting to pull a 4th person ("Bob") before 
+    // George can even be added midway.
     public void TestTakingTurnsQueue_AddPlayerMidway()
     {
         var bob = new Person("Bob", 2);
@@ -85,7 +90,9 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Bob (2), Tim (Forever), Sue (3)
     // Run 10 times.
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
-    // Defect(s) Found: 
+    // Defect(s) Found: The logic does not identify 0 as an infinite marker. Instead, it decrements 0 
+    // to a negative value or fails to re-enqueue Tim, removing him from the sequence permanently 
+    // instead of keeping him in rotation forever.
     public void TestTakingTurnsQueue_ForeverZero()
     {
         var timTurns = 0;
@@ -116,7 +123,9 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Tim (Forever), Sue (3)
     // Run 10 times.
     // Expected Result: Tim, Sue, Tim, Sue, Tim, Sue, Tim, Tim, Tim, Tim
-    // Defect(s) Found: 
+    // Defect(s) Found: The logic fails to treat a negative number (-3) as infinite turns. The 
+    // implementation does not re-enqueue a person if their turn value drops below zero, causing 
+    // the system to drop Tim from rotation prematurely.
     public void TestTakingTurnsQueue_ForeverNegative()
     {
         var timTurns = -3;
@@ -143,7 +152,9 @@ public class TakingTurnsQueueTests
     [TestMethod]
     // Scenario: Try to get the next person from an empty queue
     // Expected Result: Exception should be thrown with appropriate error message.
-    // Defect(s) Found: 
+    // Defect(s) Found: Calling GetNextPerson() on an empty queue throws either an unhandled 
+    // ArgumentOutOfRangeException or fails to raise an InvalidOperationException containing 
+    // the required message "No one in the queue.".
     public void TestTakingTurnsQueue_Empty()
     {
         var players = new TakingTurnsQueue();
