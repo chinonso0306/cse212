@@ -206,8 +206,8 @@ while (curr is not null)
     /// <summary>
     /// Iterate backward through the Linked List
     /// </summary>
-    public IEnumerable Reverse()
-   public IEnumerable Reverse()
+    public IEnumerable<int> Reverse()
+
 {
     var curr = _tail;
 
